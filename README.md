@@ -1,7 +1,7 @@
 # katana-3d
 
 
-Katana 3D render in WebGL, implementing Phong's reflection model
+Katana 3D render in WebGL, implementing Phong's reflection model, based on Ed.Angel Phong's model examples
 
 [Try it](https://alejandrobaron.github.io/katana-3d/)
 
