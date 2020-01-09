@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+    body{ background-color: rgb(150, 150, 150); }
+  canvas{ background-color: rgb(40, 40, 40);
+          border: 1px solid rgb(0, 0, 0);
+            padding-left: 0;
+            padding-right: 0;
+            margin-left: auto;
+            margin-right: auto;
+            display: block;
+
+       }
+       html, body, .grid-container { height: 100%; margin: 0; }
+
+       html *
+{
+   color: #000 !important;
+   font-family: Arial !important;
+}
+    label{color: black;}
+    .grid-container * {
+   border: 0px solid red;
+   position: relative;
+  }
+
+  .grid-container *:after {
+   position: absolute;
+   top: 0;
+   left: 0;
+  }
+
+  .grid-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    grid-template-areas: "luces Canvas colores ." ". Materiales . ." ". . . .";
+  }
+
+  .Canvas { grid-area: Canvas; }
+
+  .Materiales {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    grid-template-areas: "Mat-hoja Mat-Cazoleta Mat-Mango" "RGB-Hoja RGB-Cazoleta RGB-Mango";
+    grid-area: Materiales;
+  }
+
+  .Mat-hoja { grid-area: Mat-hoja; }
+
+  .Mat-Cazoleta { grid-area: Mat-Cazoleta; }
+
+  .Mat-Mango { grid-area: Mat-Mango; }
+
+  .RGB-Hoja { grid-area: RGB-Hoja; }
+
+  .RGB-Cazoleta { grid-area: RGB-Cazoleta; }
+
+  .RGB-Mango { grid-area: RGB-Mango; }
+
+  .colores {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
+    grid-template-areas: "." "Colores";
+    grid-area: colores;
+  }
+
+  .Colores {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    grid-template-areas: "color-amb" "color-dif" "color-espec";
+    grid-area: Colores;
+  }
+
+  .color-dif { grid-area: color-dif; }
+
+  .color-amb { grid-area: color-amb; }
+
+  .color-espec { grid-area: color-espec; }
+
+  .luces {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
+    grid-template-areas: "." "controles-luces";
+    grid-area: luces;
+  }
+
+  .controles-luces {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    grid-template-areas: "intensidad-ambiente" "intensidad-difusa" "intensidad-especular";
+    grid-area: controles-luces;
+  }
+
+  .intensidad-ambiente { grid-area: intensidad-ambiente; }
+
+  .intensidad-difusa { grid-area: intensidad-difusa; }
+
+  .intensidad-especular { grid-area: intensidad-especular; }
+
+
+</style>
+<html>
+
+<div class="grid-container" >
+  <div class="Canvas" style="margin-left:40px;">
+          <h1 align="center" style="color:black;left:40px;margin-bottom:40px;">Katana 3D Alejandro Barón</h1>
+
+          <div style="position: absolute;bottom: 0;top:70px;left:20px">
+            <label>Light Position x</label>
+            <select id="selectXLight" onchange="updateLightPos()">
+                <option value="1.0">1</option>
+                <option value="0.0">0</option>
+
+            </select>
+            <label>Light Position y</label>
+            <select id="selectYLight" onchange="updateLightPos()">
+                <option value="1.0">1</option>
+                <option value="0.0">0</option>
+
+            </select>
+            <label>Light Position z</label>
+            <select id="selectZLight" onchange="updateLightPos()">
+                <option value="1.0">1</option>
+                <option value="0.0">0</option>
+
+            </select>
+
+        <canvas id="gl-canvas" width="600" height="600">
+                  Oops ... your browser doesn't support the HTML5 canvas element
+          </div>
+  </div>
+  <div class="Materiales" style="top:10px;left:100px">
+    <div class="Mat-hoja">
+      <label style="color: black;">Blade Material</label>
+      <select id="selectHoja" onchange="updateMaterial('hoja')">
+          <option value="Steel">Steel</option>
+          <option value="Rust">Rust</option>
+          <option value="Wood">Wood</option>
+      </select>
+    </div>
+    <div class="Mat-Cazoleta">
+      <label style="color: black;">Guard Mat.</label>
+      <select id="selectCazoleta" onchange="updateMaterial('cazoleta')">
+          <option value="Wood">Wood</option>
+          <option value="Steel">Steel</option>
+          <option value="Rust">Rust</option>
+
+      </select></div>
+    <div class="Mat-Mango">
+      <label style="color: black;">Handle Mat.</label>
+      <select id="selectMango" onchange="updateMaterial('mango')">
+          <option value="Wool">Wool</option>
+          <option value="Steel">Steel</option>
+          <option value="Rust">Rust</option>
+          <option value="Wood">Wood</option>
+      </select>
+    </div>
+    <div class="RGB-Hoja">
+      <input id="sliderRHoja" type="range" min="0" max="255" value="204" onchange="changeColor('hoja')">
+      <input id="sliderGHoja" type="range" min="0" max="255" value="204" onchange="changeColor('hoja')">
+      <input id="sliderBHoja" type="range" min="0" max="255" value="204" onchange="changeColor('hoja')">
+        <label>RGB Blade</label>
+    </div>
+    <div class="RGB-Cazoleta">
+      <input id="sliderRCazoleta" type="range" min="0" max="255" value="255" onchange="changeColor('cazoleta')">
+      <input id="sliderGCazoleta" type="range" min="0" max="255" value="255" onchange="changeColor('cazoleta')">
+      <input id="sliderBCazoleta" type="range" min="0" max="255" value="0" onchange="changeColor('cazoleta')">
+      <label>RGB Guard</label>
+    </div>
+    <div class="RGB-Mango">
+      <input id="sliderRMango" type="range" min="0" max="255" value="204" onchange="changeColor('mango')">
+      <input id="sliderGMango" type="range" min="0" max="255" value="204" onchange="changeColor('mango')">
+      <input id="sliderBMango" type="range" min="0" max="255" value="204" onchange="changeColor('mango')">
+      <label>RGB Handle</label>
+    </div>
+  </div>
+  <div class="colores">
+    <div class="Colores">
+      <div class="color-dif" style="margin-left:240px">
+        <table>
+        <tr><td><input  type="range" id="sliderRDif" min="0" max="255" value="255" onchange="changeColorLuz('difusa')" ></td></tr>
+        <tr><td><input type="range" id="sliderGDif" min="0" max="255" value="255" onchange="changeColorLuz('difusa')"></td></tr>
+        <tr><td><input type="range" id="sliderBDif" min="0" max="255" value="255" onchange="changeColorLuz('difusa')"></td></tr>
+        <tr><td><label>RGB Diffuse</label></td></tr>
+       </table>
+      </div>
+      <div class="color-amb" style="margin-left:240px">
+        <table>
+        <tr><td><input  type="range" id="sliderRAmb" min="0" max="255" value="255" onchange="changeColorLuz('ambiente')"></td></tr>
+        <tr><td><input type="range" id="sliderGAmb" min="0" max="255" value="255" onchange="changeColorLuz('ambiente')"></td></tr>
+        <tr><td><input type="range" id="sliderBAmb" min="0" max="255" value="255" onchange="changeColorLuz('ambiente')"></td></tr>
+        <tr><td><label>RGB Ambient</label></td></tr>
+        </table>
+      </div>
+      <div class="color-espec" style="margin-left:240px">
+        <table>
+        <tr><td><input  type="range" id="sliderREspec" min="0" max="255" value="255" onchange="changeColorLuz('especular')"></td></tr>
+        <tr><td><input type="range" id="sliderGEspec" min="0" max="255" value="255" onchange="changeColorLuz('especular')"></td></tr>
+        <tr><td><input  type="range" id="sliderBEspec" min="0" max="255" value="255" onchange="changeColorLuz('especular')"></td></tr>
+        <tr><td><label>RGB Especular</label></td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="luces">
+    <div class="controles-luces">
+      <div class="intensidad-ambiente" style="margin-left:290px"><label>Ambient Intensity</label>
+        <input type="range" id="sliderIntAmb" min="0" max="100" value="60" onchange="changeColorLuz('ambiente')" ></div>
+      <div class="intensidad-difusa" style="margin-left:290px"><label>Diffuse Intensity </label>
+        <input  type="range" id="sliderIntDif"  min="0" max="100" value="60" onchange="changeColorLuz('difusa')" ></div>
+      <div class="intensidad-especular" style="margin-left:290px"><label>Specular Intensity</label>
+        <input  type="range" id="sliderIntEspec"  min="0" max="100" value="60" onchange="changeColorLuz('especular')"></div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+<script id="vertex-shader" type="x-shader/x-vertex">
+
+//Vertex basado en el de Ed.Angel y ampliado a que pueda haber distintos materiales, varios colores...
+attribute  vec4 vPosition;
+attribute  vec3 vNormal;
+attribute  vec4 vAmbientProduct;
+attribute  vec4 vDiffuseProduct;
+attribute  vec4 vSpecularProduct;
+attribute  float vShininess;
+varying vec4 fColor;
+
+uniform mat4 modelViewMatrix;
+uniform mat4 projectionMatrix;
+uniform vec4 lightPosition;
+
+varying vec2 v_texcoord;
+attribute vec2 a_texcoord;
+
+void main()
+{
+
+
+    vec3 pos = -(modelViewMatrix * vPosition).xyz;
+
+ 
+
+    vec3 light = lightPosition.xyz;
+    vec3 L = normalize( light - pos );
+
+
+    vec3 E = normalize( -pos );
+    vec3 H = normalize( L + E );
+
+    vec4 NN = vec4(vNormal,0);
+
+    // Transform vertex normal into eye coordinates
+
+    vec3 N = normalize( (modelViewMatrix*NN).xyz);
+
+    // Compute terms in the illumination equation
+    vec4 ambient = vAmbientProduct;
+
+    float Kd = max( dot(L, N), 0.0 );
+    vec4  diffuse = Kd*vDiffuseProduct;
+
+    float shininess=vShininess;
+    float Ks = pow( max(dot(N, H), 0.0), shininess );
+    vec4  specular = Ks * vSpecularProduct;
+
+    if( dot(L, N) < 0.0 ) {
+	specular = vec4(0.0, 0.0, 0.0, 1.0);
+    }
+
+    gl_Position = projectionMatrix * modelViewMatrix * vPosition;
+    fColor = ambient + diffuse +specular;
+
+    fColor.a = 1.0;
+
+    //texturas al fragment
+    v_texcoord = a_texcoord;
+}
+</script>
+
+<script id="fragment-shader" type="x-shader/x-fragment">
+
+precision mediump float;
+
+
+// Passed in from the vertex shader.
+varying vec2 v_texcoord;
+
+// The texture.
+uniform sampler2D u_texture;
+varying vec4 fColor;
+
+void main()
+{
+    gl_FragColor = fColor;
+    vec4 colorTextura=texture2D(u_texture, v_texcoord);
+    //colorTextura=colorTextura*vec4(0.5,0.5,0.5,0.5);
+
+    gl_FragColor = fColor*colorTextura;
+}
+</script>
+
+<script type="text/javascript" src="./Common/webgl-utils.js"></script>
+<script type="text/javascript" src="./Common/initShaders.js"></script>
+<script type="text/javascript" src="./Common/MV.js"></script>
+<script type="text/javascript" src="shadedKatana.js"></script>
+
+</html>
